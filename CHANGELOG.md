@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/kuritify-org/xxxxxx/compare/v0.2.0...v0.3.0) (2025-04-07)
+
+
+### Features
+
+* aiueo ([1e14714](https://github.com/kuritify-org/xxxxxx/commit/1e14714668fe66d5f19d456817f78984115ff8df))
+
 ## [0.2.0](https://github.com/kuritify-org/xxxxxx/compare/v0.1.0...v0.2.0) (2025-04-07)
 
 
