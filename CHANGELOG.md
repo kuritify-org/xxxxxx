@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/kuritify-org/xxxxxx/compare/v0.1.0...v0.2.0) (2025-04-07)
+
+
+### Features
+
+* save ([3f8e892](https://github.com/kuritify-org/xxxxxx/commit/3f8e892db925423f50cb172ac014d9724a4610ee))
+
 ## [0.3.0](https://github.com/kuritify-org/new-git-workflow/compare/v0.2.0...v0.3.0) (2025-04-03)
 
 
