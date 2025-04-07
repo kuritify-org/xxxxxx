@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/kuritify-org/xxxxxx/compare/v0.3.0...v0.4.0) (2025-04-07)
+
+
+### Features
+
+* xxxxx ([06aace6](https://github.com/kuritify-org/xxxxxx/commit/06aace6b1e5bd98984b53175c8912ea4ad3c14d8))
+
 ## [0.3.0](https://github.com/kuritify-org/xxxxxx/compare/v0.2.0...v0.3.0) (2025-04-07)
 
 
