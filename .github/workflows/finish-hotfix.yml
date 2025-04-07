@@ -1,0 +1,33 @@
+name: Finish Hotfix
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  __APP_ENV: "hotfix"
+  # https://nx.dev/troubleshooting/unknown-local-cache#you-share-cache-with-another-machine-using-a-network-drive
+  NX_REJECT_UNKNOWN_LOCAL_CACHE: 0
+
+jobs:
+  finish-hotfix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: hotfix/base
+
+      - name: setup runtime
+        uses: ./.github/actions/setup/
+
+      # hotfix環境を削除
+      - name: destroy
+        run: APP_ENV=$__APP_ENV npx nx run-many --verbose --target destroy --all
+
+#      # GitHub rule setsのrestriction deletionとの組み合わせにと生合成がつかなくなる
+#      - name: delete hotfix/base branch
+#        run: git push origin --delete hotfix/base
+

@@ -1,0 +1,37 @@
+name: Start Hotfix
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  __APP_ENV: "hotfix"
+  # https://nx.dev/troubleshooting/unknown-local-cache#you-share-cache-with-another-machine-using-a-network-drive
+  NX_REJECT_UNKNOWN_LOCAL_CACHE: 0
+
+jobs:
+  start-hotfix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: set latest release tag
+        run: |
+          echo "LATEST_RELEASE_TAG=$(git tag | grep -E '^v[0-9]+[.][0-9]+[.][0-9]+$' | sort -V | tail -n 1)" >> "$GITHUB_ENV"
+
+      - name: Checkout and Push 'hotfix/base'
+        run: |
+          git checkout -b hotfix/base "${LATEST_RELEASE_TAG}"
+          git push origin hotfix/base
+  
+      - name: setup runtime
+        uses: ./.github/actions/setup/
+          
+      # hotfix環境を作成
+      - name: deploy
+        run: APP_ENV=$__APP_ENV npx nx run-many --verbose --target deploy --all
+

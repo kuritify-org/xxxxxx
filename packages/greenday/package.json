@@ -1,0 +1,13 @@
+{
+  "name": "greenday",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "echo 'greenday build and build'",
+    "test": "echo 'greenday test'",
+    "diff": "echo \"greenday diff:$APP_ENV\"",
+    "e2e": "echo 'greenday e2e'",
+    "deploy": "echo \"greenday deploy:$APP_ENV\"",
+    "destroy": "echo \"greenday destroy:$APP_NV\""
+  }
+}

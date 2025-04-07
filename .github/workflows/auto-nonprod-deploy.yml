@@ -1,0 +1,54 @@
+name: Auto NonProd Deployment
+
+on:
+  pull_request:
+    types: [closed]
+
+concurrency:
+  group: "${{ github.event.repository.name }}-${{ github.base_ref }}-continuous-deploy"
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+# envを使う理由
+# https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+env:
+  BASE_BRANCH: ${{ github.base_ref }}
+  HEAD_BRANCH: ${{ github.head_ref }}
+  BASE_REF: ${{ github.event.pull_request.base.sha }}
+  HEAD_REF: ${{ github.sha }}
+  # https://nx.dev/troubleshooting/unknown-local-cache#you-share-cache-with-another-machine-using-a-network-drive
+  NX_REJECT_UNKNOWN_LOCAL_CACHE: 0
+
+jobs:
+  auto-deploy:
+    if: |
+      github.event.pull_request.merged == true 
+      && !contains(github.event.pull_request.labels.*.name, 'autorelease: pending')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: set APP_ENV
+        run: |
+          if [ "$BASE_BRANCH" == "main" ]; then
+            echo "__APP_ENV=stg" >> "$GITHUB_ENV"
+          else
+            echo "__APP_ENV=hotfix" >> "$GITHUB_ENV"
+          fi
+
+      - name: setup runtime
+        uses: ./.github/actions/setup/
+
+      - name: diff
+        run: APP_ENV=$__APP_ENV npx nx affected --verbose --target diff --base="${BASE_REF}" --head="${HEAD_REF}"
+
+      - name: deploy
+        run: APP_ENV=$__APP_ENV npx nx affected --verbose --target deploy --base="${BASE_REF}" --head="${HEAD_REF}"

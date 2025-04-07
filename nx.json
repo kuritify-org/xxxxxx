@@ -1,0 +1,32 @@
+{
+  "extends": "nx/presets/npm.json",
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "tasksRunnerOptions": {
+    "default": {
+      "options": {
+        "disableFlakyTaskDetection": true
+      }
+    }
+  },
+  "targetDefaults": {
+    "build": {
+      "cache": true
+    },
+    "test": {
+      "cache": true
+    },
+    "diff": {
+      "cache": false
+    },
+    "deploy": {
+      "cache": false
+    },
+    "destroy": {
+      "cache": false
+    },
+    "e2e": {
+      "cache": true
+    }
+
+  }
+}

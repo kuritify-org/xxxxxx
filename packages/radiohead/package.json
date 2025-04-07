@@ -1,0 +1,13 @@
+{
+  "name": "radiohead",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "echo 'radiohead build'",
+    "test": "echo 'radiohead test'",
+    "diff": "echo \"radiohead diff:$APP_ENV\"",
+    "e2e": "echo 'radiohead e2e dayo'",
+    "deploy": "echo \"radiohead deploy:$APP_ENV\"",
+    "destroy": "echo \"radiohead destroy:$APP_NV\""
+  }
+}

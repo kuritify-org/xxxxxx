@@ -1,0 +1,34 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+templer.sh
+baka.sh
+
+# compiled output
+dist
+tmp
+
+# dependencies
+node_modules
+
+# misc
+yarn-error.log
+
+# System Files
+.DS_Store
+*.swp
+Thumbs.db
+
+.nx/cache
+.nx/workspace-data
+
+# yarn
+# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# cdk
+.cdk.staging
+cdk.out

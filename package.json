@@ -1,0 +1,17 @@
+{
+  "name": "new-git-workflow",
+  "private": true,
+  "packageManager": "npm@11.1.0",
+  "workspaces": [
+    "packages/**"
+  ],
+  "scripts": {
+    "gha-lint": "docker run -i --init --rm -v $INIT_CWD/.github/workflows:/workflows rhysd/actionlint:1.7.7 -color $(ls .github/workflows/*.yml | awk -F '/' '{print \"/workflows/\"$NF}')"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "nx": "^20.6.4"
+  }
+}

@@ -1,0 +1,50 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches:
+    - main
+    - hotfix/base
+    types: [opened, reopened, synchronize]
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+  # envを使う理由
+# https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+env:
+  BASE_BRANCH: ${{ github.base_ref }}
+  HEAD_BRANCH: ${{ github.head_ref }}
+  # https://nx.dev/troubleshooting/unknown-local-cache#you-share-cache-with-another-machine-using-a-network-drive
+  NX_REJECT_UNKNOWN_LOCAL_CACHE: 0
+
+jobs:
+  ci:
+    #if: |
+    #  !contains(github.event.pull_request.labels.*.name, 'autorelease: pending')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: set APP_ENV
+        run: |
+          if [ "$BASE_BRANCH" == "main" ]; then
+            echo "__APP_ENV=stg" >> "$GITHUB_ENV"
+          else
+            echo "__APP_ENV=hotfix" >> "$GITHUB_ENV"
+          fi
+
+      - name: setup runtime
+        uses: ./.github/actions/setup/
+
+      - name: test
+        run: npx nx affected --verbose --target test --base=remotes/origin/"${BASE_BRANCH}" --head=remotes/origin/"${HEAD_BRANCH}"
+      
+      - name: diff
+        run: APP_ENV=$__APP_ENV npx nx affected --verbose --target diff --base=remotes/origin/"${BASE_BRANCH}" --head=remotes/origin/"${HEAD_BRANCH}"

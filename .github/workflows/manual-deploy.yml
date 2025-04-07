@@ -1,0 +1,53 @@
+name: Manual Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      app-env:
+        description: which APP_ENV to deploy
+        required: true
+        type: string
+        default: prod
+
+      head-branch:
+        description: head branch affected
+        required: true
+        type: string
+        default: hotfix/base
+
+concurrency:
+  # 安全性を最優先し、Continuous Deliveryと同じグループ名とする。理想的には環境単位で排他制御を実現したいが、現状では"delivery"単位での排他制御（つまり、1つのdeliveryが単独で動作する）方針とする。
+  group: "${{ github.event.repository.name }}-delivery"
+  cancel-in-progress: false
+
+env:
+  HEAD_BRANCH: ${{ inputs.head-branch }}
+  __APP_ENV: ${{ inputs.app-env }}
+  # https://nx.dev/troubleshooting/unknown-local-cache#you-share-cache-with-another-machine-using-a-network-drive
+  NX_REJECT_UNKNOWN_LOCAL_CACHE: 0
+
+
+#          base: "remotes/origin/${{ inputs.base-branch }}"
+jobs:
+  manual-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: set latest release tag
+        run: |
+          echo "LATEST_RELEASE_TAG=$(git tag | grep -E '^v[0-9]+[.][0-9]+[.][0-9]+$' | sort -V | tail -n 1)" >> "$GITHUB_ENV"
+  
+
+      - name: setup runtime
+        uses: ./.github/actions/setup/
+
+      - name: diff
+        run: APP_ENV=$__APP_ENV npx nx affected --verbose --target diff --base=refs/tags/"${LATEST_RELEASE_TAG}" --head=remotes/origin/"${HEAD_BRANCH}"
+
+
+      - name: deploy
+        run: APP_ENV=$__APP_ENV npx nx affected --verbose --target deploy --base=refs/tags/"${LATEST_RELEASE_TAG}" --head=remotes/origin/"${HEAD_BRANCH}"
+
